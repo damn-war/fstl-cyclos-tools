@@ -1,5 +1,0 @@
-csv-user-import/data
-csv-user-import/data/json/*
-!csv-user-import/data/json/example.json
-csv-user-import/data/csv/*
-csv-user-import/venv/

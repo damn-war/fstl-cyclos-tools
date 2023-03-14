@@ -1,0 +1,5 @@
+data/json/*
+!data/json/example.json
+data/csv/*
+data/user-lists/*
+venv/

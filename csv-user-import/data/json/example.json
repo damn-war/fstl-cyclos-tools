@@ -1,0 +1,40 @@
+{
+  "inputEmail": "test.test@test.de",
+  "inputEntryDate": "2021-07-01",
+  "children": {
+    "1": {
+      "inputChildForename": "test",
+      "inputChildSurname": "test",
+      "inputChildGrade": "secondary"
+    },
+    "2": {
+      "inputChildForename": "test",
+      "inputChildSurename": "test",
+      "inputChildGrade": "secondary"
+    },
+    "3": {
+      "inputChildForename": "test",
+      "inputChildSurename": "test",
+      "inputChildGrade": "secondary"
+    },
+    "4": {
+      "inputChildForename": "test",
+      "inputChildSurename": "test",
+      "inputChildGrade": "primary"
+    }
+  },
+  "parents": {
+    "1": {
+      "inputParentForename": "test",
+      "inputParentSurname": "test"
+    },
+    "2": {
+      "inputParentForename": "test",
+      "inputParentSurename": "test"
+    },
+    "3": {
+      "inputParentForename": "test",
+      "inputParentSurename": "test"
+    }
+  }
+}
