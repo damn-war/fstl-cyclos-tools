@@ -9,7 +9,7 @@ csv_header = ["name", "username", "email", "field.kinder", "field.sorgeberechtig
 csv_export_filename = "privileged.csv"
 csv_memberlist_filename = "Mitglieder_Verein.CSV"
 
-privileged_filenames = ["elternrat", "geschäftsführung", "lernbegleiter", "vorstand"]
+privileged_filenames = ["geschäftsführung", "lernbegleiter"]
 
 
 def main():
@@ -25,7 +25,7 @@ def main():
         for group in privileged_filenames:
             with open(f"data/user-lists/{group}", "r") as filehandler:
                 for line in filehandler:
-                    forename, surname = line.split(" ")
+                    forename, surname = line.replace("\n", "").split(" ")
                     print(forename, surname)
                     email = ""
                     with open(f"data/user-lists/{csv_memberlist_filename}", encoding='utf-8-sig') as csv_filehandler:
