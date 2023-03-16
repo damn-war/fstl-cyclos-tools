@@ -39,7 +39,7 @@ def validate_json_userdata(json_data):
 
 
 def get_group_for_user(json_data):
-    for group in ["elternrat", "geschäftsführung", "lernbegleiter", "vorstand"]:
+    for group in privileged_filenames:
         with open(f"data/user-lists/{group}", "r") as filehandler:
             for line in filehandler:
                 for element in json_data["parents"].items():
@@ -85,17 +85,32 @@ def get_row_from_json(json_data):
     return row
 
 
+def load_json_data(file="all"):
+    json_data_list = []
+    if file == "all":
+        # load all the data from the json files in data/json
+        for json_filename in json_files:
+            with open(path_to_json+json_filename, "r") as json_filehandler:
+                # validation step
+                json_loaded = json.load(json_filehandler)
+                if type(json_loaded) == dict:
+                    json_data_list.append()
+                elif type(json_loaded) == list:
+                    json_data_list += json_loaded
+    else:
+        with open(path_to_json+file, "r") as json_filehandler:
+            json_loaded = json.load(json_filehandler)
+            if type(json_loaded) == dict:
+                json_data_list.append()
+            elif type(json_loaded) == list:
+                json_data_list += json_loaded
+    print(f"Loaded json(s) with {len(json_data_list)} records.")
+    return json_loaded
+
+
 def main():
 
-    json_data_list = []
-
-    # load all the data from the json files in data/json
-    for json_filename in json_files:
-        with open(path_to_json+json_filename, "r") as json_filehandler:
-
-            # validation step
-
-            json_data_list.append(json.load(json_filehandler))
+    json_data_list = load_json_data("2023-03-15_21-56-35_cyclos_data.json")
 
     # make sure export dir exists
     if not os.path.exists(path_to_csv):
