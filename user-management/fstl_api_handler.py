@@ -80,10 +80,10 @@ class fstl_api:
         
     
     def check_if_user_exists(
-        self, email: str = ""
+        self, check_string: str = ""
     ):
         users = self.get_users()
-        if any(user_item["display"] == email for user_item in users):
+        if any(user_item["display"] == check_string for user_item in users):
             return True
         else:
             return False    

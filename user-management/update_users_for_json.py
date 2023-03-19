@@ -1,4 +1,11 @@
 import json
+from readable_password import readable_password as rpwd
+from fstl_api_handler import fstl_api
+import os
+
+
+
+    
 
 
 def load_json(path_to_json: str):
@@ -14,7 +21,31 @@ def normalize_json_data(json_data):
         return [json_data]
 
 
+def get_useraccount_type(user_data):
+    return user_data["type"]
+
+
+def check_if_user_exists(user_data, fstl):
+    if get_useraccount_type(user_data) == "Eltern":
+        return fstl.check_if_user_exists(user_data["inputEmail"])
+    elif get_useraccount_type(user_data) == "Lernbegleiter":
+        return fstl.check_if_user_exists(f"{user_data['Forename']} {user_data['Surname']}")
+
+
+def get_role_of_user(user_data):
+    pass
+
+
 def main():
+
+    # get the credentials from env vars
+    FSTL_CYCLOS_ADMIN_USERNAME = os.getenv("FSTL_CYCLOS_ADMIN_USERNAME")
+    FSTL_CYCLOS_ADMIN_PASSWORD = os.getenv("FSTL_CYCLOS_ADMIN_PASSWORD")
+    # initialize instance to interact with the API
+    print("Initializing API to interact with Cyclos FSTL Community.")
+    fstl = fstl_api(FSTL_CYCLOS_ADMIN_USERNAME, FSTL_CYCLOS_ADMIN_PASSWORD)
+
+
 
     # load the incoming json file
         # if array if jsons -> work with it
