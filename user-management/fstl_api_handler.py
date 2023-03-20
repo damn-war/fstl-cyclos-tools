@@ -89,7 +89,7 @@ class fstl_api:
             return False    
 
 
-    def create_user(self, name: str, username: str, email: str, sorgeberechtigte: str, kinder: str, group: str, password: str):
+    def create_user(self, params: dict):
         """
         create a new user account
         :param name: the name
@@ -98,20 +98,20 @@ class fstl_api:
         :param group: the group of the user
         :return: if succes: json object with the users, else: False
         """
-        data = {"name": name,
-                "username": username,
-                "email": email,
+        data = {"name": params["name"],
+                "username": params["username"],
+                "email": params["email"],
                 "customValues":{
-                    "sorgeberechtigte": str(sorgeberechtigte),
-                    "kinder": str(kinder),                    
+                    "sorgeberechtigte": params["sorgeberechtige"],
+                    "kinder":params["kinder"],                    
                 },
-                "group":group,
+                "group":params["group"],
                 "passwords":
                 [{
                     "type": "login",
-                    "value": password,
+                    "value": params["password"],
                     "checkConfirmation": True,
-                    "confirmationValue": password,
+                    "confirmationValue": params["password"],
                     "forceChange": True,
                 }],
                 }
@@ -123,6 +123,7 @@ class fstl_api:
             verify=self.verify,
         )        
         return evaluate_response(response)
+        
 
     def add_broker_to_user(
         self, user: str, broker: str, main_broker: bool = False

@@ -1,0 +1,9 @@
+data/json/*
+!data/json/example.json
+data/csv/*
+data/user-lists/*
+data/export/*
+data/privileged_members/*
+venv/
+__pycache__/
+test.py
