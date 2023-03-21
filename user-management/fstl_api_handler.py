@@ -77,17 +77,13 @@ class fstl_api:
             return json.loads(response.content)
         else:
             return evaluate_response(response)
-        
-    
-    def check_if_user_exists(
-        self, check_string: str = ""
-    ):
+
+    def check_if_user_exists(self, check_string: str = ""):
         users = self.get_users()
         if any(user_item["display"] == check_string for user_item in users):
             return True
         else:
-            return False    
-
+            return False
 
     def create_user(self, params: dict):
         """
@@ -98,32 +94,33 @@ class fstl_api:
         :param group: the group of the user
         :return: if succes: json object with the users, else: False
         """
-        data = {"name": params["name"],
-                "username": params["username"],
-                "email": params["email"],
-                "customValues":{
-                    "sorgeberechtigte": params["sorgeberechtige"],
-                    "kinder":params["kinder"],                    
-                },
-                "group":params["group"],
-                "passwords":
-                [{
+        data = {
+            "name": params["name"],
+            "username": params["username"],
+            "email": params["email"],
+            "customValues": {
+                "sorgeberechtigte": params["sorgeberechtige"],
+                "kinder": params["kinder"],
+            },
+            "group": params["group"],
+            "passwords": [
+                {
                     "type": "login",
                     "value": params["password"],
                     "checkConfirmation": True,
                     "confirmationValue": params["password"],
                     "forceChange": True,
-                }],
                 }
+            ],
+        }
         response = requests.post(
             f"{self.url}/users",
             json=data,
             headers={"Accept": "application/json", "Content-Type": "application/json"},
             auth=self.auth,
             verify=self.verify,
-        )        
+        )
         return evaluate_response(response)
-        
 
     def add_broker_to_user(
         self, user: str, broker: str, main_broker: bool = False
