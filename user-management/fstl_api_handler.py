@@ -78,46 +78,48 @@ class fstl_api:
         else:
             return evaluate_response(response)
 
-    def create_user(self, name: str, username: str, email: str, anzahleltern: int, group: str, phone: str):
+    def check_if_user_exists(self, check_string: str = ""):
+        users = self.get_users()
+        if any(user_item["display"] == check_string for user_item in users):
+            return True
+        else:
+            return False
+
+    def create_user(self, params: dict):
         """
         create a new user account
         :param name: the name
         :param username: the username
         :param email: the mail
-        :param anzahleltern: number of eltern
         :param group: the group of the user
-        :param phone: the phone number
         :return: if succes: json object with the users, else: False
         """
-        data = {"name": name,
-                "username": username,
-                "email": email,
-                "customValues":{
-                    "anzahlelternteile": str(anzahleltern),
-                },
-                "group":group,
-                "mobilePhones":[{
-                    "name": "Handy",
-                    "number": phone,
-                    "hidden": True,
-                    "verified": True,
-                }],
-                "passwords":
-                [{
+        data = {
+            "name": params["name"],
+            "username": params["username"],
+            "email": params["email"],
+            "customValues": {
+                "sorgeberechtigte": params["sorgeberechtige"],
+                "kinder": params["kinder"],
+            },
+            "group": params["group"],
+            "passwords": [
+                {
                     "type": "login",
-                    "value": "start123",
+                    "value": params["password"],
                     "checkConfirmation": True,
-                    "confirmationValue": "start123",
+                    "confirmationValue": params["password"],
                     "forceChange": True,
-                }],
                 }
+            ],
+        }
         response = requests.post(
             f"{self.url}/users",
             json=data,
             headers={"Accept": "application/json", "Content-Type": "application/json"},
             auth=self.auth,
             verify=self.verify,
-        )        
+        )
         return evaluate_response(response)
 
     def add_broker_to_user(
