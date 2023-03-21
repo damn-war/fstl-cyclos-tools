@@ -7,8 +7,7 @@ import argparse
 
 def parse():
     parser = argparse.ArgumentParser()
-    parser.add_argument("json_import_path", type=str,
-                    help="path to json to import")
+    parser.add_argument("json_import_path", type=str, help="path to json to import")
     args = parser.parse_args()
     return args
 
@@ -38,7 +37,9 @@ def check_if_user_exists(user_data, fstl):
         display_name = f'{user_data["parents"]["1"]["inputParentForename"]} {user_data["parents"]["1"]["inputParentSurname"]}'
         return fstl.check_if_user_exists(display_name)
     elif get_useraccount_type(user_data) == "Team_FSTL":
-        return fstl.check_if_user_exists(f"{user_data['Forename']} {user_data['Surname']}")
+        return fstl.check_if_user_exists(
+            f"{user_data['Forename']} {user_data['Surname']}"
+        )
 
 
 def get_group_for_user(user_data, path_to_mapfiles="data/privileged_members/"):
@@ -64,6 +65,7 @@ def get_group_for_user(user_data, path_to_mapfiles="data/privileged_members/"):
     else:
         return None
 
+
 def json_dict_2_multiline_string(json_dict):
     multiline_string = ""
     for element in json_dict.items():
@@ -79,17 +81,23 @@ def create_params_for_user(user_data):
     group = get_group_for_user(user_data, path_to_mapfiles="data/privileged_members/")
     email = user_data["inputEmail"]
     username = email
-    
+
     if get_useraccount_type(user_data) == "Eltern":
         name = f'{user_data["parents"]["1"]["inputParentForename"]} {user_data["parents"]["1"]["inputParentSurname"]}'
-        kinder = json_dict_2_multiline_string(user_data["children"]) if "children" in user_data else ""
+        kinder = (
+            json_dict_2_multiline_string(user_data["children"])
+            if "children" in user_data
+            else ""
+        )
         sorgeberechtige = json_dict_2_multiline_string(user_data["parents"])
     elif get_useraccount_type(user_data) == "Team_FSTL":
         name = f'{user_data["inputForename"]} {user_data["inputSurname"]}'
     # get kinder and sorgeberechtigte
 
     # create readable random password
-    password = rpwd.readable_password(length=8, incl_upper=True, incl_digit=True, incl_punc=False)
+    password = rpwd.readable_password(
+        length=8, incl_upper=True, incl_digit=True, incl_punc=False
+    )
     group = get_group_for_user(user_data)
     params = {
         "name": name,
@@ -97,13 +105,13 @@ def create_params_for_user(user_data):
         "email": email,
         "sorgeberechtige": sorgeberechtige,
         "kinder": kinder,
-        "group":group,
-        "password":password
+        "group": group,
+        "password": password,
     }
     return params
 
-def main():
 
+def main():
 
     args = parse()
     json_import_path = args.json_import_path
@@ -113,9 +121,8 @@ def main():
     if not os.path.exists("/".join(json_export_path.split("/")[:-1])):
         os.makedirs("/".join(json_export_path.split("/")[:-1]))
     if not os.path.isfile(json_export_path):
-        with open(json_export_path, mode='w', encoding='utf-8') as f:
+        with open(json_export_path, mode="w", encoding="utf-8") as f:
             json.dump([], f)
-    
 
     # get the credentials from env vars
     FSTL_CYCLOS_ADMIN_USERNAME = os.getenv("FSTL_CYCLOS_ADMIN_USERNAME")
@@ -124,30 +131,25 @@ def main():
     print("Initializing API to interact with Cyclos FSTL Community.")
     fstl = fstl_api(FSTL_CYCLOS_ADMIN_USERNAME, FSTL_CYCLOS_ADMIN_PASSWORD)
 
-    # load the incoming json file
-        # if array if jsons -> work with it
-        # if not -> make to array
     loaded_data = load_json(json_import_path)
     print(len(loaded_data))
     for user_data in loaded_data:
         if not check_if_user_exists(user_data, fstl):
             user_params = create_params_for_user(user_data)
             export_values = ["username", "password"]
-            
+
             export_dict = {key: user_params[key] for key in export_values}
             print(export_dict)
             with open(json_export_path) as fp:
                 listObj = json.load(fp)
-            if not any(d['username'] == export_dict['username'] for d in listObj):
+            if not any(d["username"] == export_dict["username"] for d in listObj):
                 listObj.append(export_dict)
             else:
                 for elem in listObj:
-                    if elem['username'] == export_dict['username']:
-                        elem['password'] = export_dict['password']
-            with open(json_export_path, mode='w', encoding='utf-8') as json_file:
-                json.dump(listObj, json_file, 
-                                    indent=4,  
-                                    separators=(',',': '))
+                    if elem["username"] == export_dict["username"]:
+                        elem["password"] = export_dict["password"]
+            with open(json_export_path, mode="w", encoding="utf-8") as json_file:
+                json.dump(listObj, json_file, indent=4, separators=(",", ": "))
             print(fstl.create_user(user_params))
 
     pass

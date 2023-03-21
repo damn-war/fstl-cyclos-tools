@@ -2,10 +2,6 @@
 
 A collection of tools to work with and operate the cyclos platform at the FSTL.
 
-## CSV-USER-IMPORT
+## user management
 
-Tools to import user registrated at an external webpage.
-
-## API
-
-Tools to work with the cyclos API.
+stuff to manage the users
