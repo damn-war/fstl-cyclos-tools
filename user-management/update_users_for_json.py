@@ -9,8 +9,6 @@ def parse():
     parser = argparse.ArgumentParser()
     parser.add_argument("json_import_path", type=str,
                     help="path to json to import")
-    parser.add_argument("json_export_path", type=str,
-                help="path to json to export")
     args = parser.parse_args()
     return args
 
@@ -109,7 +107,7 @@ def main():
 
     args = parse()
     json_import_path = args.json_import_path
-    json_export_path = args.json_export_path
+    json_export_path = json_import_path.replace("_cyclos_data", "_generated_users")
 
     # check if export file exists
     if not os.path.exists("/".join(json_export_path.split("/")[:-1])):
